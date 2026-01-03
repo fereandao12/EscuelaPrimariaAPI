@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/.git/
+**/appsettings.Development.json
+Dockerfile
+.dockerignore
+fly.toml
