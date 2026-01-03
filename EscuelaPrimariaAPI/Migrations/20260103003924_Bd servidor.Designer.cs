@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EscuelaPrimariaAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260102170405_Cambio tabla estudiante, campo idturno innecesario (Correcion)")]
-    partial class CambiotablaestudiantecampoidturnoinnecesarioCorrecion
+    [Migration("20260103003924_Bd servidor")]
+    partial class Bdservidor
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,12 +105,6 @@ namespace EscuelaPrimariaAPI.Migrations
                     b.Property<bool>("Repitente")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("TurnoidTurno")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("idProfesor")
-                        .HasColumnType("int");
-
                     b.Property<int?>("idSeccion")
                         .HasColumnType("int");
 
@@ -118,10 +112,6 @@ namespace EscuelaPrimariaAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("idEstudiante");
-
-                    b.HasIndex("TurnoidTurno");
-
-                    b.HasIndex("idProfesor");
 
                     b.HasIndex("idSeccion");
 
@@ -203,21 +193,6 @@ namespace EscuelaPrimariaAPI.Migrations
                     b.ToTable("Turnos");
                 });
 
-            modelBuilder.Entity("ProfesorTurno", b =>
-                {
-                    b.Property<int>("ProfesoresidProfesor")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TurnosidTurno")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProfesoresidProfesor", "TurnosidTurno");
-
-                    b.HasIndex("TurnosidTurno");
-
-                    b.ToTable("ProfesorTurno");
-                });
-
             modelBuilder.Entity("ApoderadoEstudiante", b =>
                 {
                     b.HasOne("EscuelaPrimariaAPI.Models.Apoderado", null)
@@ -235,19 +210,9 @@ namespace EscuelaPrimariaAPI.Migrations
 
             modelBuilder.Entity("EscuelaPrimariaAPI.Models.Estudiante", b =>
                 {
-                    b.HasOne("EscuelaPrimariaAPI.Models.Turno", null)
-                        .WithMany("Estudiantes")
-                        .HasForeignKey("TurnoidTurno");
-
-                    b.HasOne("EscuelaPrimariaAPI.Models.Profesor", "Docente")
-                        .WithMany("Estudiantes")
-                        .HasForeignKey("idProfesor");
-
                     b.HasOne("EscuelaPrimariaAPI.Models.Seccion", "Seccion")
                         .WithMany("Estudiantes")
                         .HasForeignKey("idSeccion");
-
-                    b.Navigation("Docente");
 
                     b.Navigation("Seccion");
                 });
@@ -255,11 +220,11 @@ namespace EscuelaPrimariaAPI.Migrations
             modelBuilder.Entity("EscuelaPrimariaAPI.Models.Seccion", b =>
                 {
                     b.HasOne("EscuelaPrimariaAPI.Models.Profesor", "Profesor")
-                        .WithMany("Secciones")
+                        .WithMany()
                         .HasForeignKey("idProfesor");
 
                     b.HasOne("EscuelaPrimariaAPI.Models.Turno", "Turno")
-                        .WithMany("Secciones")
+                        .WithMany()
                         .HasForeignKey("idTurno");
 
                     b.Navigation("Profesor");
@@ -267,38 +232,9 @@ namespace EscuelaPrimariaAPI.Migrations
                     b.Navigation("Turno");
                 });
 
-            modelBuilder.Entity("ProfesorTurno", b =>
-                {
-                    b.HasOne("EscuelaPrimariaAPI.Models.Profesor", null)
-                        .WithMany()
-                        .HasForeignKey("ProfesoresidProfesor")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EscuelaPrimariaAPI.Models.Turno", null)
-                        .WithMany()
-                        .HasForeignKey("TurnosidTurno")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("EscuelaPrimariaAPI.Models.Profesor", b =>
-                {
-                    b.Navigation("Estudiantes");
-
-                    b.Navigation("Secciones");
-                });
-
             modelBuilder.Entity("EscuelaPrimariaAPI.Models.Seccion", b =>
                 {
                     b.Navigation("Estudiantes");
-                });
-
-            modelBuilder.Entity("EscuelaPrimariaAPI.Models.Turno", b =>
-                {
-                    b.Navigation("Estudiantes");
-
-                    b.Navigation("Secciones");
                 });
 #pragma warning restore 612, 618
         }
