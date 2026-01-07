@@ -31,6 +31,7 @@ builder.Services.AddScoped<IEstudianteService, EstudianteService>();
 builder.Services.AddScoped<IProfesorService, ProfesorService>();
 builder.Services.AddScoped<IApoderadoService, ApoderadoService>();
 builder.Services.AddScoped<ISeccionService, SeccionService>();
+builder.Services.AddScoped<IImagenService, ImagenService>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -57,6 +58,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseStaticFiles();
 
 // Opcional: Esto hace que al abrir la raiz (/) te lleve directo al Swagger
 app.MapGet("/", context => {

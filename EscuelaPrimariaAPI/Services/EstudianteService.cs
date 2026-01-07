@@ -10,11 +10,13 @@ namespace EscuelaPrimariaAPI.Services
     {
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IImagenService _imagenService;
 
-        public EstudianteService(AppDbContext context, IMapper mapper)
+        public EstudianteService(AppDbContext context, IMapper mapper, IImagenService imagenService)
         {
             _context = context;
             _mapper = mapper;
+            _imagenService = imagenService;
         }
 
         public async Task<Estudiante> CrearEstudiante(CrearEstudianteDto crearEstudianteDto)
@@ -27,9 +29,18 @@ namespace EscuelaPrimariaAPI.Services
             {
                 throw new Exception("La edad de un estudiante de primaria debe estar entre 6 y 14 años.");
             }
+
+
+            if (!string.IsNullOrEmpty(crearEstudianteDto.imgUrl))
+            {
+                crearEstudianteDto.imgUrl = await _imagenService.GuardarImagen(crearEstudianteDto.imgUrl, "img");
+            }
+
             var estudiante = _mapper.Map<Estudiante>(crearEstudianteDto);
+
             _context.Estudiantes.Add(estudiante);
             await _context.SaveChangesAsync();
+
             return estudiante;
         }
 
@@ -41,6 +52,12 @@ namespace EscuelaPrimariaAPI.Services
                 throw new Exception("Ya existe un estudiante con el mismo DNI.");
             }
             if (estudiante == null) return null;
+
+            if (!string.IsNullOrEmpty(crearEstudianteDto.imgUrl))
+            {
+                crearEstudianteDto.imgUrl = await _imagenService.GuardarImagen(crearEstudianteDto.imgUrl, "img");
+            }
+
             _mapper.Map(crearEstudianteDto, estudiante);
             await _context.SaveChangesAsync();
             return estudiante;

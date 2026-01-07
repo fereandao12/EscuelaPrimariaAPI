@@ -1,7 +1,9 @@
 ﻿using EscuelaPrimariaAPI.DTOs;
+using EscuelaPrimariaAPI.Models;
 using EscuelaPrimariaAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EscuelaPrimariaAPI.Controllers
 {
@@ -73,6 +75,12 @@ namespace EscuelaPrimariaAPI.Controllers
             var fichaEstudiante = await _estudianteService.verFichaEstudiante(dni);
             if (fichaEstudiante == null) return NotFound();
             return Ok(fichaEstudiante);
+        }
+        //Guardar imagen
+        [HttpPost]
+        public async Task<ActionResult<Estudiante>> PostEstudiante(CrearEstudianteDto estudianteDto)
+        {
+           
         }
     }
 }
