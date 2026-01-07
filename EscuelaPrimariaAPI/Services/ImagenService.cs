@@ -17,9 +17,11 @@ namespace EscuelaPrimariaAPI.Services
                 return base64Img;
             }
 
-            var nombreArchivo = $"{Guid.NewGuid()}";
+            var nombreArchivo = $"{Guid.NewGuid()}.jpg";
 
-            var rutaCarpeta = Path.Combine(_env.WebRootPath, nombreCarpeta);
+            string rootPath = _env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
+            var rutaCarpeta = Path.Combine(rootPath, nombreCarpeta);
 
             if (!Directory.Exists(rutaCarpeta))
             {

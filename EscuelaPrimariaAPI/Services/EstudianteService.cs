@@ -47,6 +47,7 @@ namespace EscuelaPrimariaAPI.Services
         public async Task<Estudiante> ActualizarEstudiante(string dni, CrearEstudianteDto crearEstudianteDto)
         {
             var estudiante = await _context.Estudiantes.FirstOrDefaultAsync(e => e.Dni == dni);
+
             if(await _context.Estudiantes.AnyAsync(e => e.Dni == crearEstudianteDto.Dni && e.Dni != dni))
             {
                 throw new Exception("Ya existe un estudiante con el mismo DNI.");

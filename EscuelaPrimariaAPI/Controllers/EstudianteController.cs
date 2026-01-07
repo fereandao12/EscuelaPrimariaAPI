@@ -76,11 +76,5 @@ namespace EscuelaPrimariaAPI.Controllers
             if (fichaEstudiante == null) return NotFound();
             return Ok(fichaEstudiante);
         }
-        //Guardar imagen
-        [HttpPost]
-        public async Task<ActionResult<Estudiante>> PostEstudiante(CrearEstudianteDto estudianteDto)
-        {
-           
-        }
     }
 }
