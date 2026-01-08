@@ -12,7 +12,7 @@ namespace EscuelaPrimariaAPI.Services
 
         public async Task<string> GuardarImagen(string base64Img, string nombreCarpeta)
         {
-            if (string.IsNullOrEmpty(base64Img) || !base64Img.Contains("base64"))
+            if (string.IsNullOrEmpty(base64Img) || base64Img.Length < 100)
             {
                 return base64Img;
             }
@@ -20,7 +20,6 @@ namespace EscuelaPrimariaAPI.Services
             var nombreArchivo = $"{Guid.NewGuid()}.jpg";
 
             string rootPath = _env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-
             var rutaCarpeta = Path.Combine(rootPath, nombreCarpeta);
 
             if (!Directory.Exists(rutaCarpeta))
@@ -31,11 +30,17 @@ namespace EscuelaPrimariaAPI.Services
             var rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
 
             var datos = base64Img.Contains(",") ? base64Img.Split(',')[1] : base64Img;
-            var bytes = Convert.FromBase64String(datos);
 
-            await File.WriteAllBytesAsync(rutaCompleta, bytes);
-
-            return $"/{nombreCarpeta}/{nombreArchivo}";
+            try
+            {
+                var bytes = Convert.FromBase64String(datos);
+                await File.WriteAllBytesAsync(rutaCompleta, bytes);
+                return $"/{nombreCarpeta}/{nombreArchivo}";
+            }
+            catch
+            {
+                return "";
+            }
         }
     }
 }
