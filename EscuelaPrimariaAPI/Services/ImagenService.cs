@@ -1,44 +1,60 @@
 ﻿
+using EscuelaPrimariaAPI.Models;
+using System.Text.Json;
+
 namespace EscuelaPrimariaAPI.Services
 {
     public class ImagenService : IImagenService
     {
-        private readonly IWebHostEnvironment _env;
+        private readonly HttpClient _httpClient;
+        private const string ApiKey = "211b8cab2ae726f894adcf17c07df1e0";
 
-        public ImagenService(IWebHostEnvironment env)
+        public ImagenService(HttpClient httpClient)
         {
-            _env = env;
+            _httpClient = httpClient;
         }
+
 
         public async Task<string> GuardarImagen(string base64Img, string nombreCarpeta)
         {
-            if (string.IsNullOrEmpty(base64Img) || base64Img.Length < 100)
+            if (string.IsNullOrEmpty(base64Img) || base64Img.Length < 200)
             {
                 return base64Img;
             }
 
-            var nombreArchivo = $"{Guid.NewGuid()}.jpg";
-
-            string rootPath = _env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-            var rutaCarpeta = Path.Combine(rootPath, nombreCarpeta);
-
-            if (!Directory.Exists(rutaCarpeta))
-            {
-                Directory.CreateDirectory(rutaCarpeta);
-            }
-
-            var rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
-
-            var datos = base64Img.Contains(",") ? base64Img.Split(',')[1] : base64Img;
-
             try
             {
-                var bytes = Convert.FromBase64String(datos);
-                await File.WriteAllBytesAsync(rutaCompleta, bytes);
-                return $"/{nombreCarpeta}/{nombreArchivo}";
+                // ImgBB necesita el string limpio, tal como muestra el ejemplo de tu imagen.
+                var base64Limpio = base64Img.Contains(",") ? base64Img.Split(',')[1] : base64Img;
+
+                // 3. Preparar los datos para enviar (Formulario)
+                var content = new MultipartFormDataContent();
+                content.Add(new StringContent(ApiKey), "key");
+                content.Add(new StringContent(base64Limpio), "image");
+                // content.Add(new StringContent("600"), "expiration"); 
+
+                // 4. Enviar la petición POST a ImgBB
+                var response = await _httpClient.PostAsync("https://api.imgbb.com/1/upload", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // 5. Leer la respuesta
+                    var jsonString = await response.Content.ReadAsStringAsync();
+                    var imgbbResponse = JsonSerializer.Deserialize<ImgbbResponse>(jsonString);
+
+                    // 6. Retornar solo la URL pública
+                    return imgbbResponse.data.url;
+                }
+                else
+                {
+                    // Si falla ImgBB, puedes lanzar error o devolver null
+                    Console.WriteLine("Error al subir a ImgBB: " + response.ReasonPhrase);
+                    return "";
+                }
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine("Excepción en ImagenService: " + ex.Message);
                 return "";
             }
         }

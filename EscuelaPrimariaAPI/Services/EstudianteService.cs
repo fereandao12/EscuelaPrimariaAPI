@@ -31,7 +31,7 @@ namespace EscuelaPrimariaAPI.Services
             }
 
 
-            if (!string.IsNullOrEmpty(crearEstudianteDto.imgUrl))
+            if (!string.IsNullOrEmpty(crearEstudianteDto.imgUrl) && crearEstudianteDto.imgUrl.Length > 200)
             {
                 crearEstudianteDto.imgUrl = await _imagenService.GuardarImagen(crearEstudianteDto.imgUrl, "img");
             }
@@ -54,7 +54,7 @@ namespace EscuelaPrimariaAPI.Services
             }
             if (estudiante == null) return null;
 
-            if (!string.IsNullOrEmpty(crearEstudianteDto.imgUrl))
+            if (!string.IsNullOrEmpty(crearEstudianteDto.imgUrl) && crearEstudianteDto.imgUrl.Length > 200)
             {
                 crearEstudianteDto.imgUrl = await _imagenService.GuardarImagen(crearEstudianteDto.imgUrl, "img");
             }

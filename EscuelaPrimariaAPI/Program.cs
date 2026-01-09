@@ -45,6 +45,8 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 // --- CORRECCIÓN AQUÍ ---
